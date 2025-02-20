@@ -10,7 +10,7 @@ import { jwtDecode } from "jwt-decode";
 
 import Logo from "../assets/logo.png";
 import { useAuth } from "../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
@@ -61,6 +61,7 @@ export const SignupPage = () => {
 
   const authCtx = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
   
 
   const onSubmit = async (data: formType) => {
@@ -115,15 +116,40 @@ export const SignupPage = () => {
   };
 
   const [cities, setCities] = useState<citiesData[]>([]);
+  const [submittedPic, setSubmittedPic] = useState<boolean>(false);
+
 
   const handleStateChange = async (response: AxiosResponse) => {
     if (response.status === 200) setCities(response.data as citiesData[]);
   };
 
   useEffect(() => {
-    if (authCtx.status == true)
+    if (authCtx.status == true && !(state?.edit))
       navigate("/dashboard");
-  }, [authCtx.status]);
+
+    if (state?.edit) {
+      UserService.get(jwtDecode<{id: string}>(authCtx.token).id).then((response) => {
+        setValue("name", response.name);
+        setValue("course", response.course);
+        setValue("role", response.role);
+        setValue("otherPronouns", response.pronouns.filter((v) => !["Ela/Dela", "Ele/Dele", "Elu/Delu"].includes(v))[0]);
+        setValue("pronouns", response.pronouns.filter((v) => ["Ela/Dela", "Ele/Dele", "Elu/Delu"].includes(v)));
+        setValue("otherEthnicity", response.ethnicity.filter((v) => !["Preta", "Branca", "Parda", "Amarela", "Indígena"].includes(v))[0]);
+        setValue("ethnicity", response.ethnicity.filter((v) => ["Preta", "Branca", "Parda", "Amarela", "Indígena"].includes(v)));
+        setValue("city", response.city || 'Cidade');
+        setValue("otherLgbt", response.lgbt.filter((v) => !["Lésbica", "Gay", "Bissexual", "Trans", "Queer", "Intersexo", "Assexual"].includes(v))[0]);
+        setValue("lgbt", response.lgbt.filter((v) => ["Lésbica", "Gay", "Bissexual", "Trans", "Queer", "Intersexo", "Assexual"].includes(v)));
+        setValue("parties", response.parties);
+        setValue("hobby", response.hobby);
+        setValue("music", response.music);
+        setValue("games", response.games);
+        setValue("sports", response.sports);
+        if (response.picture) {
+          setSubmittedPic(true);
+        }
+      });
+    }
+  }, [authCtx.status, state?.edit]);
 
   return (
     <div className="w-full min-h-screen bg-zinc-800 flex flex-col items-center p-5 gap-y-6 text-white">
@@ -145,20 +171,25 @@ export const SignupPage = () => {
           variant="standard"
           type="text"
           sx={inputStyle}
+          slotProps={{ inputLabel: { shrink: state?.edit && watch('name') } }}
           {...register("name")}
         />
         {errors.name && (
           <span className="text-red-400">{errors.name.message}</span>
         )}
-        <div>
-          <p>Se quiser, escolha uma foto para e seu veterane te conhecer:</p>
-          <input type="file" multiple={false} className="mt-2 file:bg-white file:rounded-lg file:text-black file:px-2" accept="image/*"{...register("picture")} />
-        </div>
-        { errors.picture && 
-          <span className="text-red-400">
-            {errors.picture?.message?.toString()}
-          </span>
-        }
+        {!submittedPic && (
+          <>
+            <div>
+              <p>Se quiser, escolha uma foto para e seu veterane te conhecer:</p>
+              <input type="file" multiple={false} className="mt-2 file:bg-white file:rounded-lg file:text-black file:px-2" accept="image/*"{...register("picture")} />
+            </div>
+            { errors.picture && 
+              <span className="text-red-400">
+                {errors.picture?.message?.toString()}
+              </span>
+            }
+          </>
+        )}
 
         <div className="flex flex-col gap-2">
           <p>Qual curso você se matriculou?</p>
@@ -275,6 +306,7 @@ export const SignupPage = () => {
             type="text"
             variant="standard"
             label="Outros:"
+            slotProps={{ inputLabel: { shrink: state?.edit && watch('otherPronouns') } }}
             sx={inputStyle}
             className="w-26 justify-self-center !mb-4"
             {...register("otherPronouns")}
@@ -336,6 +368,7 @@ export const SignupPage = () => {
             variant="standard"
             label="Outra:"
             sx={inputStyle}
+            slotProps={{ inputLabel: { shrink: state?.edit && watch('otherEthnicity') } }}
             className="w-26 justify-self-center !mb-4"
             {...register("otherEthnicity")}
           />
@@ -443,7 +476,7 @@ export const SignupPage = () => {
             <input
               className="cursor-pointer rounded-md appearance-none w-5 h-5 not-checked:bg-white checked:bg-cyan-200"
               type="checkbox"
-              value="Trans"
+              value="Queer"
               {...register("lgbt")}
             />{" "}
             Queer
@@ -452,7 +485,7 @@ export const SignupPage = () => {
             <input
               className="cursor-pointer rounded-md appearance-none w-5 h-5 not-checked:bg-white checked:bg-cyan-200"
               type="checkbox"
-              value="Trans"
+              value="Intersexo"
               {...register("lgbt")}
             />{" "}
             Intersexo
@@ -461,7 +494,7 @@ export const SignupPage = () => {
             <input
               className="cursor-pointer rounded-md appearance-none w-5 h-5 not-checked:bg-white checked:bg-cyan-200"
               type="checkbox"
-              value="Trans"
+              value="Assexual"
               {...register("lgbt")}
             />{" "}
             Assexual
@@ -471,6 +504,7 @@ export const SignupPage = () => {
             variant="standard"
             label="Outra:"
             sx={inputStyle}
+            slotProps={{ inputLabel: { shrink: state?.edit && watch('otherLgbt') } }}
             className="w-26 justify-self-center !mb-4"
             {...register("otherLgbt")}
           />
@@ -498,6 +532,7 @@ export const SignupPage = () => {
           variant="standard"
           label="O que você mais gosta de fazer?"
           sx={inputStyle}
+          slotProps={{ inputLabel: { shrink: state?.edit && watch('hobby') } }}
           {...register("hobby")}
         />
         <TextField
@@ -505,6 +540,7 @@ export const SignupPage = () => {
           variant="standard"
           label="Qual gênero musical ou artista que te define?"
           sx={inputStyle}
+          slotProps={{ inputLabel: { shrink: state?.edit && watch('music') } }}
           {...register("music")}
         />
         <TextField
@@ -512,6 +548,7 @@ export const SignupPage = () => {
           variant="standard"
           label="Gosta de videogames? Se sim, quais?"
           sx={inputStyle}
+          slotProps={{ inputLabel: { shrink: state?.edit && watch('games') } }}
           {...register("games")}
         />
         <TextField
@@ -519,6 +556,7 @@ export const SignupPage = () => {
           variant="standard"
           label="Gosta de esportes? Se sim, quais?"
           sx={inputStyle}
+          slotProps={{ inputLabel: { shrink: state?.edit && watch('sports') } }}
           {...register("sports")}
         />
 

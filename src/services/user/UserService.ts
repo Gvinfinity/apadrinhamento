@@ -11,10 +11,45 @@ export interface IUser {
     role: string;
 }
 
+enum Course {
+    CC = "CC",
+    EC = "EC",
+}
+
+enum Role {
+    bixe = "bixe",
+    veterane = "veterane",
+}
+
+export interface IUserGet {
+    id:         string;
+    name:       string;
+    email:      string;
+    status:     boolean;
+    role:       Role;
+    course:     Course;
+    pronouns:   string[];
+    ethnicity:  string[];
+    city?:      string;
+    lgbt:       string[];
+    parties:    number;
+    hobby?:     string;
+    music?:     string;
+    games?:     string;
+    sports?:    string;
+    picture:    string;
+}
+
 async function update(userId: string, data: formType): Promise<IUser> {
 
     const response = await Api().put(`/users/${userId}`, data);
     return response.data;
 }
 
-export default { update };
+async function get(userId: string): Promise<IUserGet> {
+
+    const response = await Api().get(`/users/${userId}`);
+    return response.data.user;
+}
+
+export default { update, get };

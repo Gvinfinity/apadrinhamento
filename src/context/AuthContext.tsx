@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 
 import { authService } from "../services/auth/AuthService";
 
-import { UnauthorizedException } from "../errors/UnauthorizedException";
 import { ApiException } from "../errors/ApiException";
 
 import { AxiosError } from "axios";
@@ -12,6 +11,7 @@ interface IUserData {
     name: string;
     token: string;
     role: string;
+    status: boolean;
 }
 
 interface LoginData {
@@ -21,7 +21,7 @@ interface LoginData {
 
 interface IUserContextData extends IUserData{
 
-    login: (params: LoginData) => Promise<number>;
+    login: (params: LoginData) => Promise<boolean>;
     logout: () => Promise<void>;
     verify: () => Promise<void>;
 }
@@ -40,26 +40,20 @@ export const AuthContextProvider: React.FC<React.PropsWithChildren<object>> = ({
     }, [user])
 
     // Função para Login
-    const handleLogin = async (data: LoginData): Promise<number> => {
+    const handleLogin = async (data: LoginData): Promise<any> => {
             try {
                 const response = await authService.login(data);
 
                 setUser({
-                    name: response.data.name,
+                    name: response.data.name || '',
                     token: response.data.access_token,
-                    role: response.data.role
+                    status: response.data.status,
+                    role: response.data.role || ''
                 } as IUserData);
-
-                return 1;
+                return response.data.status;
             }
             catch ( error: unknown ) {
-                if ( error instanceof UnauthorizedException) {
-                    return 2;
-                }
-
-                console.error('Failed login Attempt: ', error);
-                
-                return 0;
+                throw error;
             }
     };  
 
@@ -97,7 +91,7 @@ export const AuthContextProvider: React.FC<React.PropsWithChildren<object>> = ({
     };
 
     return (
-        <AuthContext.Provider value={{ name: user.name, token: user.token, role: user.role, login: handleLogin, logout: handleLogout, verify: verify }}>
+        <AuthContext.Provider value={{ name: user.name, token: user.token, role: user.role, status: user.status, login: handleLogin, logout: handleLogout, verify: verify }}>
             {children}
         </AuthContext.Provider>
     );

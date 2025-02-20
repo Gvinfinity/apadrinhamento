@@ -517,6 +517,7 @@ export const SignupPage = () => {
             min={0}
             max={10}
             defaultValue={5}
+            value={watch('parties')}
             sx={{ color: "#a2f4fd" }}
             valueLabelDisplay="auto"
             onChange={(_, value) => setValue("parties", value as number)}

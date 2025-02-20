@@ -41,7 +41,7 @@ export const LoginPage = () => {
         } catch (e) {
             toast.dismiss(pendingToast);
             if (e instanceof UnauthorizedException) {
-                toast.error("Credenciais inválidas");
+                return toast.error("Credenciais inválidas");
             }
             console.error(e);
             toast.error("Erro desconhecido ao fazer login");

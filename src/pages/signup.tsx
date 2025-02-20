@@ -180,7 +180,7 @@ export const SignupPage = () => {
         {!submittedPic && (
           <>
             <div>
-              <p>Se quiser, escolha uma foto para e seu veterane te conhecer:</p>
+              <p>Se quiser, escolha uma foto para se apresentar:</p>
               <input type="file" multiple={false} className="mt-2 file:bg-white file:rounded-lg file:text-black file:px-2" accept="image/*"{...register("picture")} />
             </div>
             { errors.picture && 

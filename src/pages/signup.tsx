@@ -156,7 +156,7 @@ export const SignupPage = () => {
         </div>
         { errors.picture && 
           <span className="text-red-400">
-            {errors.picture.message}
+            {errors.picture?.message?.toString()}
           </span>
         }
 

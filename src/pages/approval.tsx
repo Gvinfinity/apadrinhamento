@@ -66,8 +66,10 @@ export const ApprovalPage = () => {
     }, [users])
 
     useEffect(() => {
-        if (authCtx.role !== "ADMIN") 
+        if (authCtx.role !== "ADMIN") {
             navigate('/login');
+            return;
+        }
 
         loadPendingApprovals();
     }, []);

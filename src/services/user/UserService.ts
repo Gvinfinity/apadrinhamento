@@ -52,4 +52,13 @@ async function get(userId: string): Promise<IUserGet> {
     return response.data.user;
 }
 
-export default { update, get };
+async function getPendingApprovals(): Promise<IUserGet[]> {
+    const response = await Api().get(`/users/getPendingApproval`);
+    return response.data;
+}
+
+async function approveUser(userId: string): Promise<void> {
+    await Api().put(`/users/${userId}/approve`);
+}
+
+export default { update, get, getPendingApprovals, approveUser };

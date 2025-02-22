@@ -40,6 +40,15 @@ export interface IUserGet {
     picture:    string;
 }
 
+interface IStatus {
+    vets: number;
+    bixes: number;
+    total: number;
+    approved: number;
+    pending: number;
+}
+
+
 async function update(userId: string, data: formType): Promise<IUser> {
 
     const response = await Api().put(`/users/${userId}`, data);
@@ -61,4 +70,9 @@ async function approveUser(userId: string): Promise<void> {
     await Api().put(`/users/${userId}/approve`);
 }
 
-export default { update, get, getPendingApprovals, approveUser };
+async function getStats(): Promise<IStatus> {
+    const response = await Api().get(`/users/stats`);
+    return response.data;
+}
+
+export default { update, get, getPendingApprovals, approveUser, getStats };

@@ -38,6 +38,7 @@ export interface IUserGet {
     games?:     string;
     sports?:    string;
     picture:    string;
+    godchildRelation: godparentRelation[];
 }
 
 interface IStatus {
@@ -46,6 +47,10 @@ interface IStatus {
     total: number;
     approved: number;
     pending: number;
+}
+
+interface godparentRelation {
+    godparent: IUserGet;
 }
 
 
@@ -75,4 +80,14 @@ async function getStats(): Promise<IStatus> {
     return response.data;
 }
 
-export default { update, get, getPendingApprovals, approveUser, getStats };
+async function addGodparentRelations(data: string): Promise<void> {
+    await Api().post(`/users/addGodparentRelations`, data);
+}
+
+async function getToMatch(): Promise<string> {
+    const response = await Api().get(`/users/getToMatch`);
+
+    return JSON.stringify(response.data);
+}
+
+export default { update, get, getPendingApprovals, approveUser, getStats, getToMatch, addGodparentRelations };

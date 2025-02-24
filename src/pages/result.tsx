@@ -34,7 +34,7 @@ export const ResultPage = () => {
                 <button className="bg-amber-600 rounded-lg px-3 text-white font-bold text-xl self-end cursor-pointer mr-2" onClick={() => authCtx.logout() }>Sair</button>
             </div>
             <img src={Logo} className="w-1/2 lg:w-1/6 md:w-1/4 h-fit aspect-square" />
-            <h1 className="text-4xl text-center font-extrabold text-cyan-200">{user.role == 'bixe' ? 'Você foi apadrinhade por:' : 'Você apadrinhou:'}</h1>
+            <h1 className="text-4xl text-center font-extrabold text-cyan-200">{authCtx?.role == 'bixe' ? 'Você foi apadrinhade por:' : 'Você apadrinhou:'}</h1>
             {user && user.godchildRelation?.map((relation) => {
                 return (
                     <div key={relation.godparent.id} className="flex flex-col w-full lg:w-4/5 lg:2/3 gap-2 bg-zinc-700 rounded-lg p-8 text-white gap-y-6">

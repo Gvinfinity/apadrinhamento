@@ -34,7 +34,7 @@ export const ResultPage = () => {
                 <button className="bg-amber-600 rounded-lg px-3 text-white font-bold text-xl self-end cursor-pointer mr-2" onClick={() => authCtx.logout() }>Sair</button>
             </div>
             <img src={Logo} className="w-1/2 lg:w-1/6 md:w-1/4 h-fit aspect-square" />
-            <h1 className="text-4xl text-center font-extrabold text-cyan-200">Você foi apadrinhade por:</h1>
+            <h1 className="text-4xl text-center font-extrabold text-cyan-200">{user.role == 'bixe' ? 'Você foi apadrinhade por:' : 'Você apadrinhou:'}</h1>
             {user && user.godchildRelation?.map((relation) => {
                 return (
                     <div key={relation.godparent.id} className="flex flex-col w-full lg:w-4/5 lg:2/3 gap-2 bg-zinc-700 rounded-lg p-8 text-white gap-y-6">
@@ -81,6 +81,57 @@ export const ResultPage = () => {
                         <div className="flex flex-col">
                             <h1 className="text-lg font-bold">Gosta de esportes? Se sim, quais?</h1>
                             <p>{relation.godparent.sports}</p>
+                        </div>
+                    </div>
+                )
+            }
+            )}
+            {user && user.godparentRelation?.map((relation) => {
+                return (
+                    <div key={relation.godchild.id} className="flex flex-col w-full lg:w-4/5 lg:2/3 gap-2 bg-zinc-700 rounded-lg p-8 text-white gap-y-6">
+                        <div className="flex items-center gap-2 ml-2">
+                            {relation.godchild.picture ?
+                                (<img src={relation.godchild.picture} className="w-1/4 h-full object-cover aspect-square rounded-md" />) 
+                                :
+                                (<div className="text-5xl lg:text-9xl"><AccountCircle fontSize="inherit" className="text-white" /></div>)
+                            }
+                            <div className="flex flex-col">
+                                <p><b>Nome:</b> {relation.godchild.name}</p>
+                                <p><b>Email:</b> {relation.godchild.email}</p>
+                                <p><b>Veio de:</b> {relation.godchild.city}</p>
+                            </div>
+                        </div>
+                        <div className='w-5/6'>
+                            <Slider aria-label="Festas"
+                                min={0}
+                                max={10}
+                                value={relation.godchild.parties}
+                                sx={{ color: "#a2f4fd" }}
+                            />
+                            <div className="flex justify-between">
+                                <p>Pouco</p>
+                                <p>Muito</p>
+                            </div>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-lg font-bold">O que você mais gosta de fazer?</h1>
+                            <p>{relation.godchild.hobby}</p>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-lg font-bold">Qual gênero musical ou artista que te define?</h1>
+                            <p>{relation.godchild.music}</p>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-lg font-bold">Gosta de videogames? Se sim, quais?</h1>
+                            <p>{relation.godchild.games}</p>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-lg font-bold">Gosta de videogames? Se sim, quais?</h1>
+                            <p>{relation.godchild.games}</p>
+                        </div>
+                        <div className="flex flex-col">
+                            <h1 className="text-lg font-bold">Gosta de esportes? Se sim, quais?</h1>
+                            <p>{relation.godchild.sports}</p>
                         </div>
                     </div>
                 )

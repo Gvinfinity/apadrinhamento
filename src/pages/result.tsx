@@ -75,10 +75,6 @@ export const ResultPage = () => {
                             <p>{relation.godparent.games}</p>
                         </div>
                         <div className="flex flex-col">
-                            <h1 className="text-lg font-bold">Gosta de videogames? Se sim, quais?</h1>
-                            <p>{relation.godparent.games}</p>
-                        </div>
-                        <div className="flex flex-col">
                             <h1 className="text-lg font-bold">Gosta de esportes? Se sim, quais?</h1>
                             <p>{relation.godparent.sports}</p>
                         </div>
@@ -120,10 +116,6 @@ export const ResultPage = () => {
                         <div className="flex flex-col">
                             <h1 className="text-lg font-bold">Qual gênero musical ou artista que te define?</h1>
                             <p>{relation.godchild.music}</p>
-                        </div>
-                        <div className="flex flex-col">
-                            <h1 className="text-lg font-bold">Gosta de videogames? Se sim, quais?</h1>
-                            <p>{relation.godchild.games}</p>
                         </div>
                         <div className="flex flex-col">
                             <h1 className="text-lg font-bold">Gosta de videogames? Se sim, quais?</h1>
